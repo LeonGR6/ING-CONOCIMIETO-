@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detección de VPH</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #preguntas {
+            text-align: left;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bienvenido al programa de detección del VPH</h1>
+        <div id="preguntas">
+            <!-- Aquí se agregarán las preguntas y respuestas previas -->
+        </div>
+        <button id="btnIniciar">Iniciar prueba</button>
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnIniciar = document.getElementById('btnIniciar');
+            btnIniciar.addEventListener('click', iniciarPrueba);
+
+            function iniciarPrueba() {
+                const preguntasDiv = document.getElementById('preguntas');
+                preguntasDiv.innerHTML = ''; // Limpiar cualquier pregunta anterior
+                const resultadoDiv = document.getElementById('resultado');
+                resultadoDiv.innerHTML = ''; // Limpiar resultado anterior
+
+                const preguntas = [
+                    "¿Ha notado alguna lesión o verruga en sus genitales?",
+                    "¿Experimenta picazón o irritación en el área genital?",
+                    "¿Ha experimentado sangrado vaginal o anal anormal?",
+                    "¿Siente dolor o molestias al orinar?",
+                    "¿Ha notado algún cambio en el flujo vaginal?",
+                    "¿Experimenta dolor durante las relaciones sexuales?",
+                    "¿Siente ardor al orinar?",
+                    "¿Cuántas parejas sexuales ha tenido en los últimos seis meses?"
+                ];
+
+                let respuestas = [];
+
+                preguntas.forEach(pregunta => {
+                    const respuesta = prompt(pregunta);
+                    respuestas.push({ pregunta: pregunta, respuesta: respuesta });
+                });
+
+                mostrarRespuestas(respuestas);
+                detectarVPH(respuestas);
+            }
+
+            function mostrarRespuestas(respuestas) {
+                const preguntasDiv = document.getElementById('preguntas');
+                preguntasDiv.innerHTML = '<h2>Respuestas:</h2>';
+                respuestas.forEach(respuesta => {
+                    const respuestaP = document.createElement('p');
+                    respuestaP.textContent = `${respuesta.pregunta} - ${respuesta.respuesta}`;
+                    preguntasDiv.appendChild(respuestaP);
+                });
+            }
+
+            function detectarVPH(respuestas) {
+                let puntaje = 0;
+                respuestas.forEach(respuesta => {
+                    const respuestaBooleana = respuesta.respuesta.toLowerCase() === 'si';
+                    switch (respuesta.pregunta) {
+                        case "¿Ha notado alguna lesión o verruga en sus genitales?":
+                            puntaje += respuestaBooleana ? 3 : 0;
+                            break;
+                        case "¿Experimenta picazón o irritación en el área genital?":
+                            puntaje += respuestaBooleana ? 2 : 0;
+                            break;
+                        case "¿Ha experimentado sangrado vaginal o anal anormal?":
+                            puntaje += respuestaBooleana ? 3 : 0;
+                            break;
+                        case "¿Siente dolor o molestias al orinar?":
+                            puntaje += respuestaBooleana ? 1 : 0;
+                            break;
+                        case "¿Ha notado algún cambio en el flujo vaginal?":
+                            puntaje += respuestaBooleana ? 2 : 0;
+                            break;
+                        case "¿Experimenta dolor durante las relaciones sexuales?":
+                            puntaje += respuestaBooleana ? 3 : 0;
+                            break;
+                        case "¿Siente ardor al orinar?":
+                            puntaje += respuestaBooleana ? 2 : 0;
+                            break;
+                        case "¿Cuántas parejas sexuales ha tenido en los últimos seis meses?":
+                            const numeroParejas = parseInt(respuesta.respuesta);
+                            if (numeroParejas === 0) {
+                                puntaje += 0;
+                            } else if (numeroParejas <= 3) {
+                                puntaje += 1;
+                            } else if (numeroParejas <= 6) {
+                                puntaje += 2;
+                            } else if (numeroParejas <= 9) {
+                                puntaje += 3;
+                            } else {
+                                puntaje += 4;
+                            }
+                            break;
+                    }
+                });
+
+                const resultadoDiv = document.getElementById('resultado');
+                if (puntaje >= 10) {
+                    resultadoDiv.innerHTML = "<p>Basado en sus respuestas, es posible que tenga VPH. Le recomendamos que consulte a un médico lo antes posible.</p>";
+                } else {
+                    resultadoDiv.innerHTML = "<p>Basado en sus respuestas, es probable que no tenga VPH. Sin embargo, es importante que consulte a un médico si tiene preocupaciones.</p>";
+                }
+            }
+        });
+    </script>
+</body>
+</html>
